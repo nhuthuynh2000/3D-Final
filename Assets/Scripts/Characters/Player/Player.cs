@@ -5,13 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInput))]
 public class Player : MonoBehaviour
 {
-    public Rigidbody rigidbody;
+    [field: Header("References:")]
+    [field: SerializeField] public PlayerSO Data { get; private set; }
+    public Rigidbody myRigidbody;
     public Transform mainCameraTransform { get; private set; }
     public PlayerInput playerInput { get; private set; }
     private PlayerMovementStateMachine movementStateMachine;
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody>();
+        myRigidbody = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         mainCameraTransform = Camera.main.transform;
         movementStateMachine = new PlayerMovementStateMachine(this);
