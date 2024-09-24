@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerDashingState : PlayerGroundedState
 {
@@ -23,6 +24,17 @@ public class PlayerDashingState : PlayerGroundedState
         UpdateConsecutiveDashes();
 
         startTime = Time.time;
+    }
+    public override void OnAnimationTransitionEvent()
+    {
+        base.OnAnimationTransitionEvent();
+        if (stateMachine.reusableData.movementInput == Vector2.zero)
+        {
+            stateMachine.ChangeState(stateMachine.idlingState);
+            return;
+        }
+
+        stateMachine.ChangeState(stateMachine.sprintingState);
     }
 
     #endregion
@@ -58,6 +70,16 @@ public class PlayerDashingState : PlayerGroundedState
     private bool IsConsecutive()
     {
         return Time.time < startTime + dashData.timeToBeConsideredConsecutive;
+    }
+    #endregion
+    #region Input Methods
+    protected override void OnMovementCanceled(InputAction.CallbackContext context)
+    {
+
+    }
+    protected override void OnDashStarted(InputAction.CallbackContext context)
+    {
+
     }
     #endregion
 }

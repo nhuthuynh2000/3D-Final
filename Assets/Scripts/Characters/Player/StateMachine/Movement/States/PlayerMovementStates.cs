@@ -21,7 +21,7 @@ public class PlayerMovementStates : IState
     {
         stateMachine.reusableData.TimeToReachTargetRotation = movementData.rotationData.targetRoationReachTime;
     }
-
+    #region IState Methods
     public virtual void Enter()
     {
         Debug.Log("State: " + GetType().Name);
@@ -52,7 +52,21 @@ public class PlayerMovementStates : IState
     {
 
     }
+    public virtual void OnAnimationEnterEvent()
+    {
 
+    }
+
+    public virtual void OnAnimationExitEvent()
+    {
+
+    }
+
+    public virtual void OnAnimationTransitionEvent()
+    {
+
+    }
+    #endregion
     #region Main Methods
     private void ReadMovementInput()
     {
@@ -184,5 +198,6 @@ public class PlayerMovementStates : IState
     {
         shouldWalk = !shouldWalk;
     }
+
     #endregion
 }
