@@ -24,6 +24,7 @@ public class PlayerMovementStates : IState
 
     public virtual void Enter()
     {
+        Debug.Log("State: " + GetType().Name);
         AddInputActionCallBack();
     }
 
@@ -41,7 +42,7 @@ public class PlayerMovementStates : IState
         ReadMovementInput();
     }
 
-    public void PhysicsUpdate()
+    public virtual void PhysicsUpdate()
     {
         Move();
     }
@@ -117,13 +118,17 @@ public class PlayerMovementStates : IState
     }
     protected float GetMoveSpeed()
     {
-        return movementData.baseSpeed * stateMachine.reusableData.movementSpeedModifier;
+        return movementData.baseSpeed * stateMachine.reusableData.movementSpeedModifier * stateMachine.reusableData.movementOnSlopeSpeedModifier;
     }
     protected Vector3 GetPlayerHorizontalVelocity()
     {
         Vector3 playerHorizontalVelocity = stateMachine.Player.myRigidbody.velocity;
         playerHorizontalVelocity.y = 0f;
         return playerHorizontalVelocity;
+    }
+    protected Vector3 GetPlayerVerticalVelocity()
+    {
+        return new Vector3(0f, stateMachine.Player.myRigidbody.velocity.y, 0f);
     }
     private void RotateTowardsTargetRotation()
     {

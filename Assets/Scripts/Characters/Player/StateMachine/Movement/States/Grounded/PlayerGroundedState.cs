@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,53 @@ using UnityEngine.InputSystem;
 
 public class PlayerGroundedState : PlayerMovementStates
 {
+    private SlopeData slopeData;
     public PlayerGroundedState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
     {
+        slopeData = stateMachine.Player.colliderUtility.slopeData;
     }
+
+    public override void PhysicsUpdate()
+    {
+        base.PhysicsUpdate();
+        Float();
+    }
+
+    #region Main Methods
+    private void Float()
+    {
+        Vector3 capsuleColliderCenterInWorldSpace = stateMachine.Player.colliderUtility.capsuleColliderData.collider.bounds.center;
+        Ray downwardsRayFromCapsuleCenter = new Ray(capsuleColliderCenterInWorldSpace, Vector3.down);
+
+        if (Physics.Raycast(downwardsRayFromCapsuleCenter, out RaycastHit hit, slopeData.stepReachForce, stateMachine.Player.layerData.groundLayer, QueryTriggerInteraction.Ignore))
+        {
+            float groundAngle = Vector3.Angle(hit.normal, -downwardsRayFromCapsuleCenter.direction);
+            float slopeSpeedModifier = SetSlopeSpeedModifierOnAngle(groundAngle);
+            if (slopeSpeedModifier == 0f)
+            {
+                return;
+            }
+            float distanceToFloatingPoint = stateMachine.Player.colliderUtility.capsuleColliderData.colliderCenterInLocalSpace.y * stateMachine.Player.transform.localScale.y - hit.distance;
+            if (distanceToFloatingPoint == 0f)
+            {
+                return;
+            }
+            float amountToLift = distanceToFloatingPoint * slopeData.stepReachForce - GetPlayerVerticalVelocity().y;
+
+            Vector3 liftForce = new Vector3(0f, amountToLift, 0f);
+            stateMachine.Player.myRigidbody.AddForce(liftForce, ForceMode.VelocityChange);
+        }
+    }
+
+    private float SetSlopeSpeedModifierOnAngle(float angle)
+    {
+        float slopeSpeedModifier = movementData.slopeSpeedAngle.Evaluate(angle);
+
+        stateMachine.reusableData.movementOnSlopeSpeedModifier = slopeSpeedModifier;
+
+        return slopeSpeedModifier;
+    }
+    #endregion
     #region Reusable Methods
     protected override void AddInputActionCallBack()
     {

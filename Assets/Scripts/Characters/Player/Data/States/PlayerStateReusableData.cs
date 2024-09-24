@@ -4,6 +4,7 @@ public class PlayerStateReusableData
 {
     public Vector2 movementInput { get; set; }
     public float movementSpeedModifier { get; set; } = 1f;
+    public float movementOnSlopeSpeedModifier { get; set; } = 1f;
     public bool shoudWalk { get; set; }
 
     private Vector3 currentTargetRotation;
