@@ -39,4 +39,12 @@ public abstract class StateMachine
     {
         curState?.OnAnimationTransitionEvent();
     }
+    public void OnTriggerEnter(Collider collider)
+    {
+        curState.OnTriggerEnter(collider);
+    }
+    public void OnTriggerExit(Collider collider)
+    {
+        curState.OnTriggerExit(collider);
+    }
 }

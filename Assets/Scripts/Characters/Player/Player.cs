@@ -8,9 +8,9 @@ public class Player : MonoBehaviour
     [field: Header("References:")]
     [field: SerializeField] public PlayerSO Data { get; private set; }
     [field: Header("Collisions")]
-    [field: SerializeField] public CapsuleColliderUtility colliderUtility { get; private set; }
+    [field: SerializeField] public PlayerCapsuleColliderUtility colliderUtility { get; private set; }
     [field: SerializeField] public PlayerLayerData layerData { get; private set; }
-    public Rigidbody myRigidbody;
+    public Rigidbody myRigidbody { get; private set; }
     public Transform mainCameraTransform { get; private set; }
     public PlayerInput playerInput { get; private set; }
     private PlayerMovementStateMachine movementStateMachine;
@@ -33,6 +33,14 @@ public class Player : MonoBehaviour
     private void Start()
     {
         movementStateMachine.ChangeState(movementStateMachine.idlingState);
+    }
+    private void OnTriggerEnter(Collider collider)
+    {
+        movementStateMachine.OnTriggerEnter(collider);
+    }
+    private void OnTriggerExit(Collider collider)
+    {
+        movementStateMachine.OnTriggerExit(collider);
     }
     private void Update()
     {

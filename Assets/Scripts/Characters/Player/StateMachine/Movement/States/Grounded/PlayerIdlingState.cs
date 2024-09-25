@@ -15,6 +15,7 @@ public class PlayerIdlingState : PlayerGroundedState
     {
         base.Enter();
         stateMachine.reusableData.movementSpeedModifier = 0f;
+        stateMachine.reusableData.currentJumpForce = airborneData.jumpData.stationeryForce;
         ResetVelocity();
     }
     public override void Update()

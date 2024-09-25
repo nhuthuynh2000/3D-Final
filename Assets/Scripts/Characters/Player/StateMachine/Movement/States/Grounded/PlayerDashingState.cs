@@ -9,6 +9,7 @@ public class PlayerDashingState : PlayerGroundedState
     private PlayerDashData dashData;
     private float startTime;
     private int consecutiveDashesUsed;
+    private bool shouldKeepRotating;
     public PlayerDashingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
     {
         dashData = movementData.dashData;
@@ -19,18 +20,34 @@ public class PlayerDashingState : PlayerGroundedState
         base.Enter();
 
         stateMachine.reusableData.movementSpeedModifier = dashData.speedModifier;
+        stateMachine.reusableData.rotationData = dashData.RotationData;
+        stateMachine.reusableData.currentJumpForce = airborneData.jumpData.strongForce;
 
         AddForceOnTransitionFromStationeryState();
+        shouldKeepRotating = stateMachine.reusableData.movementInput != Vector2.zero;
         UpdateConsecutiveDashes();
 
         startTime = Time.time;
     }
+    public override void PhysicsUpdate()
+    {
+        base.PhysicsUpdate();
+        if (!shouldKeepRotating)
+        {
+            return;
+        }
+        RotateTowardsTargetRotation();
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        SetBaseRotationData();
+    }
     public override void OnAnimationTransitionEvent()
     {
-        base.OnAnimationTransitionEvent();
         if (stateMachine.reusableData.movementInput == Vector2.zero)
         {
-            stateMachine.ChangeState(stateMachine.idlingState);
+            stateMachine.ChangeState(stateMachine.hardStoppingState);
             return;
         }
 
@@ -47,6 +64,8 @@ public class PlayerDashingState : PlayerGroundedState
         }
         Vector3 characterRotationDirection = stateMachine.Player.transform.forward;
         characterRotationDirection.y = 0f;
+
+        UpdateTargetRotation(characterRotationDirection, false);
 
         stateMachine.Player.myRigidbody.velocity = characterRotationDirection * GetMoveSpeed();
 
@@ -72,6 +91,23 @@ public class PlayerDashingState : PlayerGroundedState
         return Time.time < startTime + dashData.timeToBeConsideredConsecutive;
     }
     #endregion
+
+    #region Reusable Methods
+    protected override void AddInputActionCallBack()
+    {
+        base.AddInputActionCallBack();
+        stateMachine.Player.playerInput.playerActions.Movement.performed += OnMovementPerformed;
+    }
+    protected override void RemoveInputActionCallBack()
+    {
+        base.RemoveInputActionCallBack();
+        stateMachine.Player.playerInput.playerActions.Movement.performed -= OnMovementPerformed;
+
+    }
+
+
+    #endregion
+
     #region Input Methods
     protected override void OnMovementCanceled(InputAction.CallbackContext context)
     {
@@ -80,6 +116,10 @@ public class PlayerDashingState : PlayerGroundedState
     protected override void OnDashStarted(InputAction.CallbackContext context)
     {
 
+    }
+    private void OnMovementPerformed(InputAction.CallbackContext context)
+    {
+        shouldKeepRotating = true;
     }
     #endregion
 }

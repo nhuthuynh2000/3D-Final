@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerGroundedState : PlayerMovementStates
 {
@@ -11,13 +12,21 @@ public class PlayerGroundedState : PlayerMovementStates
     {
         slopeData = stateMachine.Player.colliderUtility.slopeData;
     }
+    #region IState Methods
+    public override void Enter()
+    {
+        base.Enter();
+        UpdateShouldSprintState();
+    }
+
+
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
         Float();
     }
-
+    #endregion
     #region Main Methods
     private void Float()
     {
@@ -52,6 +61,25 @@ public class PlayerGroundedState : PlayerMovementStates
 
         return slopeSpeedModifier;
     }
+    private void UpdateShouldSprintState()
+    {
+        if (!stateMachine.reusableData.shouldSprint)
+        {
+            return;
+        }
+        if (stateMachine.reusableData.movementInput != Vector2.zero)
+        {
+            return;
+        }
+        stateMachine.reusableData.shouldSprint = false;
+    }
+    private bool IsThereGroundUnderneath()
+    {
+        BoxCollider groundCheckCollider = stateMachine.Player.colliderUtility.triggerColliderData.groundCheckCollider;
+        Vector3 groundColliderCenterInWorldSpace = groundCheckCollider.bounds.center;
+        Collider[] overlappedGroundColliders = Physics.OverlapBox(groundColliderCenterInWorldSpace, groundCheckCollider.bounds.extents, groundCheckCollider.transform.rotation, stateMachine.Player.layerData.groundLayer, QueryTriggerInteraction.Ignore);
+        return overlappedGroundColliders.Length > 0;
+    }
     #endregion
     #region Reusable Methods
     protected override void AddInputActionCallBack()
@@ -59,21 +87,54 @@ public class PlayerGroundedState : PlayerMovementStates
         base.AddInputActionCallBack();
         stateMachine.Player.playerInput.playerActions.Movement.canceled += OnMovementCanceled;
         stateMachine.Player.playerInput.playerActions.Dash.started += OnDashStarted;
+        stateMachine.Player.playerInput.playerActions.Jump.started += OnJumpStarted;
     }
 
     protected override void RemoveInputActionCallBack()
     {
         base.RemoveInputActionCallBack();
         stateMachine.Player.playerInput.playerActions.Movement.canceled -= OnMovementCanceled;
+        stateMachine.Player.playerInput.playerActions.Dash.started -= OnDashStarted;
+        stateMachine.Player.playerInput.playerActions.Jump.started -= OnJumpStarted;
+
     }
+
+
     protected virtual void OnMove()
     {
-        if (shouldWalk)
+        if (stateMachine.reusableData.shouldSprint)
+        {
+            stateMachine.ChangeState(stateMachine.sprintingState);
+            return;
+        }
+        if (stateMachine.reusableData.shoudWalk)
         {
             stateMachine.ChangeState(stateMachine.walkingState);
             return;
         }
         stateMachine.ChangeState(stateMachine.runningState);
+    }
+    protected override void OnContactWithGroundExited(Collider collider)
+    {
+        base.OnContactWithGroundExited(collider);
+        if (IsThereGroundUnderneath())
+        {
+            return;
+        }
+        Vector3 capsuleColliderCenterInWorldSpace = stateMachine.Player.colliderUtility.capsuleColliderData.collider.bounds.center;
+        Ray downwardsRayFromCapsuleBottom = new Ray(capsuleColliderCenterInWorldSpace - stateMachine.Player.colliderUtility.capsuleColliderData.colliderVerticalExtents, Vector3.down);
+        if (!Physics.Raycast(downwardsRayFromCapsuleBottom, out _, movementData.groundToFallRayDistance, stateMachine.Player.layerData.groundLayer, QueryTriggerInteraction.Ignore))
+        {
+            OnFall();
+        }
+
+    }
+
+
+
+    protected virtual void OnFall()
+    {
+        stateMachine.ChangeState(stateMachine.fallingState);
     }
     #endregion
 
@@ -90,6 +151,10 @@ public class PlayerGroundedState : PlayerMovementStates
     protected virtual void OnDashStarted(InputAction.CallbackContext context)
     {
         stateMachine.ChangeState(stateMachine.dashingState);
+    }
+    protected virtual void OnJumpStarted(InputAction.CallbackContext context)
+    {
+        stateMachine.ChangeState(stateMachine.jumpingState);
     }
     #endregion
 }

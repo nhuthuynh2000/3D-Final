@@ -5,7 +5,9 @@ public class PlayerStateReusableData
     public Vector2 movementInput { get; set; }
     public float movementSpeedModifier { get; set; } = 1f;
     public float movementOnSlopeSpeedModifier { get; set; } = 1f;
+    public float movementDecelerationForce { get; set; } = 1f;
     public bool shoudWalk { get; set; }
+    public bool shouldSprint { get; set; }
 
     private Vector3 currentTargetRotation;
     private Vector3 timeToReachTargetRotation;
@@ -39,4 +41,7 @@ public class PlayerStateReusableData
             return ref dampedTargetRotationPassedTime;
         }
     }
+    public Vector3 currentJumpForce { get; set; }
+
+    public PlayerRotationData rotationData { get; set; }
 }

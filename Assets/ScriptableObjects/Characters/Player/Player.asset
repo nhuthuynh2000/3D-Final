@@ -14,9 +14,177 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <GroundedData>k__BackingField:
     <baseSpeed>k__BackingField: 5
+    <slopeSpeedAngle>k__BackingField:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -0.016666668
+        outSlope: -0.016666668
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 15
+        value: 0.75
+        inSlope: Infinity
+        outSlope: Infinity
+        tangentMode: 103
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 55.1
+        value: 0.4
+        inSlope: Infinity
+        outSlope: Infinity
+        tangentMode: 103
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 65.1
+        value: 0
+        inSlope: Infinity
+        outSlope: Infinity
+        tangentMode: 1
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 90
+        value: 1
+        inSlope: 0.04016064
+        outSlope: 0.04016064
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
     <rotationData>k__BackingField:
       <targetRoationReachTime>k__BackingField: {x: 0, y: 0.14, z: 0}
     <walkData>k__BackingField:
       <speedModifier>k__BackingField: 0.225
     <runData>k__BackingField:
       <speedModifier>k__BackingField: 1
+    <dashData>k__BackingField:
+      <speedModifier>k__BackingField: 2
+      <RotationData>k__BackingField:
+        <targetRoationReachTime>k__BackingField: {x: 0, y: 0.02, z: 0}
+      <timeToBeConsideredConsecutive>k__BackingField: 1
+      <consecutiveDashesLimitAmount>k__BackingField: 2
+      <dashLimitReachCooldown>k__BackingField: 1.75
+    <sprintData>k__BackingField:
+      <speedModifier>k__BackingField: 1.7
+      <sprintToRunTime>k__BackingField: 1
+      <runToWalkTime>k__BackingField: 0.5
+    <stopData>k__BackingField:
+      <lightDecelerationForce>k__BackingField: 5
+      <mediumDecelerationForce>k__BackingField: 6.5
+      <hardDecelerationForce>k__BackingField: 5
+  <AirborneData>k__BackingField:
+    <jumpData>k__BackingField:
+      <rotationData>k__BackingField:
+        <targetRoationReachTime>k__BackingField: {x: 0, y: 0.02, z: 0}
+      <jumptToGroundRayDistance>k__BackingField: 2
+      <jumpForceModifierOnSlopeUpwards>k__BackingField:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: -0.0125
+          outSlope: -0.0125
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 20
+          value: 0.75
+          inSlope: Infinity
+          outSlope: Infinity
+          tangentMode: 103
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 35.1
+          value: 0.5
+          inSlope: Infinity
+          outSlope: Infinity
+          tangentMode: 103
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 75.1
+          value: 1
+          inSlope: Infinity
+          outSlope: Infinity
+          tangentMode: 103
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 90
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      <jumpForceModifierOnSlopeDownwards>k__BackingField:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 1
+          inSlope: -0.007499999
+          outSlope: -0.007499999
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 20
+          value: 0.85
+          inSlope: Infinity
+          outSlope: Infinity
+          tangentMode: 103
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 70.1
+          value: 1
+          inSlope: Infinity
+          outSlope: Infinity
+          tangentMode: 103
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0.33333334
+        - serializedVersion: 3
+          time: 90
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 34
+          weightedMode: 0
+          inWeight: 0.33333334
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      <stationeryForce>k__BackingField: {x: 0, y: 5, z: 0}
+      <weakForce>k__BackingField: {x: 1, y: 5, z: 1}
+      <mediumForce>k__BackingField: {x: 3.5, y: 5, z: 3.5}
+      <strongForce>k__BackingField: {x: 5, y: 5, z: 5}

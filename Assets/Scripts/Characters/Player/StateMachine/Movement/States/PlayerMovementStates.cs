@@ -9,18 +9,24 @@ public class PlayerMovementStates : IState
 
     protected PlayerGroundedData movementData;
 
-    protected bool shouldWalk;
+    protected PlayerAirborneData airborneData;
+
+
     public PlayerMovementStates(PlayerMovementStateMachine playerMovementStateMachine)
     {
         stateMachine = playerMovementStateMachine;
         movementData = stateMachine.Player.Data.GroundedData;
+        airborneData = stateMachine.Player.Data.AirborneData;
         InitializeData();
     }
 
     private void InitializeData()
     {
-        stateMachine.reusableData.TimeToReachTargetRotation = movementData.rotationData.targetRoationReachTime;
+        SetBaseRotationData();
+
     }
+
+
     #region IState Methods
     public virtual void Enter()
     {
@@ -66,6 +72,25 @@ public class PlayerMovementStates : IState
     {
 
     }
+    public virtual void OnTriggerEnter(Collider collider)
+    {
+        if (stateMachine.Player.layerData.isGroundLayer(collider.gameObject.layer))
+        {
+            OnContactWithGround(collider);
+        }
+    }
+    public void OnTriggerExit(Collider collider)
+    {
+        if (stateMachine.Player.layerData.isGroundLayer(collider.gameObject.layer))
+        {
+            OnContactWithGroundExited(collider);
+            return;
+        }
+    }
+
+
+
+
     #endregion
     #region Main Methods
     private void ReadMovementInput()
@@ -144,7 +169,7 @@ public class PlayerMovementStates : IState
     {
         return new Vector3(0f, stateMachine.Player.myRigidbody.velocity.y, 0f);
     }
-    private void RotateTowardsTargetRotation()
+    protected void RotateTowardsTargetRotation()
     {
         float currentYAngle = stateMachine.Player.myRigidbody.rotation.eulerAngles.y;
         if (currentYAngle == stateMachine.reusableData.CurrentTargetRotation.y)
@@ -179,6 +204,11 @@ public class PlayerMovementStates : IState
     {
         stateMachine.Player.myRigidbody.velocity = Vector3.zero;
     }
+    protected void ResetVerticalVelocity()
+    {
+        Vector3 playerHorizontalVelocity = GetPlayerHorizontalVelocity();
+        stateMachine.Player.myRigidbody.velocity = playerHorizontalVelocity;
+    }
     protected virtual void AddInputActionCallBack()
     {
         stateMachine.Player.playerInput.playerActions.WalkToggle.started += OnWalkToggleStarted;
@@ -190,13 +220,53 @@ public class PlayerMovementStates : IState
     {
         stateMachine.Player.playerInput.playerActions.WalkToggle.started -= OnWalkToggleStarted;
     }
+    protected void DecelerateHorizontally()
+    {
+        Vector3 playerHorizontalVelocity = GetPlayerHorizontalVelocity();
+        stateMachine.Player.myRigidbody.AddForce(-playerHorizontalVelocity * stateMachine.reusableData.movementDecelerationForce, ForceMode.Acceleration);
+    }
+    protected void DecelerateVertically()
+    {
+        Vector3 playerVerticalVelocity = GetPlayerVerticalVelocity();
+        stateMachine.Player.myRigidbody.AddForce(-playerVerticalVelocity * stateMachine.reusableData.movementDecelerationForce, ForceMode.Acceleration);
+    }
+    protected bool isMovingHorizontally(float minimumMagnitude = 0.1f)
+    {
+        Vector3 playerHorizontalVelocity = GetPlayerHorizontalVelocity();
+
+        Vector2 playerHorizontalMovement = new Vector2(playerHorizontalVelocity.x, playerHorizontalVelocity.z);
+
+        return playerHorizontalMovement.magnitude > minimumMagnitude;
+    }
+    protected void SetBaseRotationData()
+    {
+        stateMachine.reusableData.rotationData = movementData.rotationData;
+        stateMachine.reusableData.TimeToReachTargetRotation = stateMachine.reusableData.rotationData.targetRoationReachTime;
+    }
+
+    protected bool isMovingUp(float minimumVelocity = 0.1f)
+    {
+        return GetPlayerVerticalVelocity().y > minimumVelocity;
+    }
+    protected bool isMovingDown(float minimumVelocity = 0.1f)
+    {
+        return GetPlayerVerticalVelocity().y < -minimumVelocity;
+    }
+    protected virtual void OnContactWithGround(Collider collider)
+    {
+
+    }
+    protected virtual void OnContactWithGroundExited(Collider collider)
+    {
+
+    }
     #endregion
 
 
     #region Input Methods
     protected virtual void OnWalkToggleStarted(InputAction.CallbackContext context)
     {
-        shouldWalk = !shouldWalk;
+        stateMachine.reusableData.shoudWalk = !stateMachine.reusableData.shoudWalk;
     }
 
     #endregion
