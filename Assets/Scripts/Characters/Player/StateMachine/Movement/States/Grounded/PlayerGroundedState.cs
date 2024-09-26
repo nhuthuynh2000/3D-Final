@@ -16,11 +16,17 @@ public class PlayerGroundedState : PlayerMovementStates
     public override void Enter()
     {
         base.Enter();
+        StartAnimation(stateMachine.Player.animationsData.groundedParameterHash);
         UpdateShouldSprintState();
 
         UpdateCameraRecenteringState(stateMachine.reusableData.movementInput);
     }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.groundedParameterHash);
 
+    }
 
 
     public override void PhysicsUpdate()

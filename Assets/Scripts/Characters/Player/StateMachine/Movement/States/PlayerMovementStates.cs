@@ -154,6 +154,14 @@ public class PlayerMovementStates : IState
     }
     #endregion
     #region Reuasble Methods
+    protected void StartAnimation(int animationHash)
+    {
+        stateMachine.Player.animator.SetBool(animationHash, true);
+    }
+    protected void StopAnimation(int animationHash)
+    {
+        stateMachine.Player.animator.SetBool(animationHash, false);
+    }
     protected Vector3 GetMovementInputDirection()
     {
         return new Vector3(stateMachine.reusableData.movementInput.x, 0f, stateMachine.reusableData.movementInput.y);

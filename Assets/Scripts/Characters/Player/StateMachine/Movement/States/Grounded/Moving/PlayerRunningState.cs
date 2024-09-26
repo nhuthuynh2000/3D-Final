@@ -17,10 +17,16 @@ public class PlayerRunningState : PlayerMovingState
     {
         stateMachine.reusableData.movementSpeedModifier = movementData.runData.speedModifier;
         base.Enter();
-
+        StartAnimation(stateMachine.Player.animationsData.runParameterHash);
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.mediumForce;
 
         startTime = Time.time;
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.runParameterHash);
+
     }
     public override void Update()
     {

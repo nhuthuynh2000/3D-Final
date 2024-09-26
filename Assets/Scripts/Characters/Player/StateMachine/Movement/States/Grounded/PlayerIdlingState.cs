@@ -18,8 +18,15 @@ public class PlayerIdlingState : PlayerGroundedState
         stateMachine.reusableData.movementSpeedModifier = 0f;
         stateMachine.reusableData.backwardsCameraRecenteringData = idleData.backwardsCameraRecenteringData;
         base.Enter();
+        StartAnimation(stateMachine.Player.animationsData.idleParameterHash);
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.stationeryForce;
         ResetVelocity();
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.idleParameterHash);
+
     }
     public override void Update()
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,7 +18,7 @@ public class PlayerWalkingState : PlayerMovingState
         stateMachine.reusableData.movementSpeedModifier = walkData.speedModifier;
         stateMachine.reusableData.backwardsCameraRecenteringData = walkData.backwardsCameraRecenteringData;
         base.Enter();
-
+        StartAnimation(stateMachine.Player.animationsData.walkParameterHash);
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.weakForce;
 
     }
@@ -25,6 +26,7 @@ public class PlayerWalkingState : PlayerMovingState
     public override void Exit()
     {
         base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.walkParameterHash);
         SetBaseCameraRecenteringData();
     }
     #endregion

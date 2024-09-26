@@ -15,7 +15,12 @@ public class PlayerStoppingState : PlayerGroundedState
         stateMachine.reusableData.movementSpeedModifier = 0f;
         SetBaseCameraRecenteringData();
         base.Enter();
-
+        StartAnimation(stateMachine.Player.animationsData.stoppingParameterHash);
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.stoppingParameterHash);
     }
     public override void PhysicsUpdate()
     {

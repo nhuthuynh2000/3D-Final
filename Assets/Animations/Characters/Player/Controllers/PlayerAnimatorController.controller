@@ -160,7 +160,7 @@ AnimatorTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isHardFalling
+    m_ConditionEvent: isRolling
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 9039900004030861736}
@@ -207,7 +207,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: isWalking
+    m_ConditionEvent: landing
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -439,17 +439,17 @@ AnimatorStateMachine:
     - {fileID: 8132687929441715031}
     - {fileID: 7893324626521264647}
     - {fileID: -7982265916184160775}
+  - first: {fileID: 3411971660354606202}
+    second:
+    - {fileID: 4893182990520131487}
+    - {fileID: -8481709724630566590}
+    - {fileID: -5835701180636291283}
   - first: {fileID: 3441485470548760743}
     second:
     - {fileID: -64198003727231521}
     - {fileID: -6696736812333097822}
     - {fileID: -4039118373374606334}
     - {fileID: -6121125448651807848}
-  - first: {fileID: 3411971660354606202}
-    second:
-    - {fileID: 4893182990520131487}
-    - {fileID: -8481709724630566590}
-    - {fileID: -5835701180636291283}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 370, y: 300, z: 0}
   m_EntryPosition: {x: 360, y: -110, z: 0}
@@ -569,7 +569,7 @@ AnimatorTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isRolling
+    m_ConditionEvent: isHardLanding
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2671929851661759493}
@@ -817,6 +817,30 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: moving
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: stopping
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: landing
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: Airborne
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: isIdling
     m_Type: 4
     m_DefaultFloat: 0
@@ -847,18 +871,6 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: moving
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: stopping
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   - m_Name: isMediumStopping
     m_Type: 4
     m_DefaultFloat: 0
@@ -871,25 +883,13 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: landing
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
   - m_Name: isRolling
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: isHardFalling
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: Airborne
+  - m_Name: isHardLanding
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -1042,12 +1042,12 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -579941914624009254}
-    second:
-    - {fileID: -399303288429614392}
   - first: {fileID: -5519375668678941195}
     second:
     - {fileID: -8542203276763935602}
+  - first: {fileID: -579941914624009254}
+    second:
+    - {fileID: -399303288429614392}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 360, y: -80, z: 0}
   m_EntryPosition: {x: 360, y: 20, z: 0}

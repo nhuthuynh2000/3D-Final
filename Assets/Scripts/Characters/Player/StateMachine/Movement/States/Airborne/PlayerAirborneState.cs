@@ -11,7 +11,13 @@ public class PlayerAirborneState : PlayerMovementStates
     public override void Enter()
     {
         base.Enter();
+        StartAnimation(stateMachine.Player.animationsData.airborneParameterHash);
         ResetSprintState();
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.airborneParameterHash);
     }
     #endregion
     #region Reusable Methods

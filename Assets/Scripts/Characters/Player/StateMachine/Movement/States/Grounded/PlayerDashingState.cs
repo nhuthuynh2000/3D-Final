@@ -19,7 +19,7 @@ public class PlayerDashingState : PlayerGroundedState
     {
         stateMachine.reusableData.movementSpeedModifier = dashData.speedModifier;
         base.Enter();
-
+        StartAnimation(stateMachine.Player.animationsData.dashParameterHash);
         stateMachine.reusableData.rotationData = dashData.RotationData;
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.strongForce;
 
@@ -41,6 +41,8 @@ public class PlayerDashingState : PlayerGroundedState
     public override void Exit()
     {
         base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.dashParameterHash);
+
         SetBaseRotationData();
     }
     public override void OnAnimationTransitionEvent()

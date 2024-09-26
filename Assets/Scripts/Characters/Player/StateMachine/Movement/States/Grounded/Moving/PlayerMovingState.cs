@@ -7,4 +7,17 @@ public class PlayerMovingState : PlayerGroundedState
     public PlayerMovingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
     {
     }
+
+    #region IState Methods
+    public override void Enter()
+    {
+        base.Enter();
+        StartAnimation(stateMachine.Player.animationsData.movingParameterHash);
+    }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.movingParameterHash);
+    }
+    #endregion
 }

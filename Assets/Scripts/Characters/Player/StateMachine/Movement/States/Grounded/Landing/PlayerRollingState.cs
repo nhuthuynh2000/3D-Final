@@ -16,10 +16,15 @@ public class PlayerRollingState : PlayerLandingState
     {
         stateMachine.reusableData.movementSpeedModifier = rollData.speedModifier;
         base.Enter();
-
+        StartAnimation(stateMachine.Player.animationsData.rollParameterHash);
         stateMachine.reusableData.shouldSprint = false;
     }
+    public override void Exit()
+    {
+        base.Exit();
+        StopAnimation(stateMachine.Player.animationsData.rollParameterHash);
 
+    }
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
