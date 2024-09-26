@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerFallingState : PlayerAirborneState
 {
     private PlayerFallData fallData;
+    private Vector3 playerPositionOnEnter;
     public PlayerFallingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
     {
         fallData = airborneData.fallData;
@@ -14,6 +15,7 @@ public class PlayerFallingState : PlayerAirborneState
     public override void Enter()
     {
         base.Enter();
+        playerPositionOnEnter = stateMachine.Player.transform.position;
         stateMachine.reusableData.movementSpeedModifier = 0f;
         ResetVerticalVelocity();
     }
@@ -29,6 +31,23 @@ public class PlayerFallingState : PlayerAirborneState
     protected override void ResetSprintState()
     {
 
+    }
+
+    protected override void OnContactWithGround(Collider collider)
+    {
+        float fallDistance = playerPositionOnEnter.y - stateMachine.Player.transform.position.y;
+
+        if (fallDistance < fallData.minimumDistanceToBeConsideredHardFall)
+        {
+            stateMachine.ChangeState(stateMachine.lightLandingState);
+            return;
+        }
+        if (stateMachine.reusableData.shoudWalk && !stateMachine.reusableData.shouldSprint || stateMachine.reusableData.movementInput == Vector2.zero)
+        {
+            stateMachine.ChangeState(stateMachine.hardLandingState);
+            return;
+        }
+        stateMachine.ChangeState(stateMachine.rollingState);
     }
     #endregion
 

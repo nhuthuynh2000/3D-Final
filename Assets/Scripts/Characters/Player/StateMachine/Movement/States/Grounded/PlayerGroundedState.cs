@@ -17,6 +17,8 @@ public class PlayerGroundedState : PlayerMovementStates
     {
         base.Enter();
         UpdateShouldSprintState();
+
+        UpdateCameraRecenteringState(stateMachine.reusableData.movementInput);
     }
 
 
@@ -56,6 +58,12 @@ public class PlayerGroundedState : PlayerMovementStates
     private float SetSlopeSpeedModifierOnAngle(float angle)
     {
         float slopeSpeedModifier = movementData.slopeSpeedAngle.Evaluate(angle);
+        if (stateMachine.reusableData.movementOnSlopeSpeedModifier != slopeSpeedModifier)
+        {
+            stateMachine.reusableData.movementOnSlopeSpeedModifier = slopeSpeedModifier;
+            UpdateCameraRecenteringState(stateMachine.reusableData.movementInput);
+
+        }
 
         stateMachine.reusableData.movementOnSlopeSpeedModifier = slopeSpeedModifier;
 
@@ -77,7 +85,7 @@ public class PlayerGroundedState : PlayerMovementStates
     {
         BoxCollider groundCheckCollider = stateMachine.Player.colliderUtility.triggerColliderData.groundCheckCollider;
         Vector3 groundColliderCenterInWorldSpace = groundCheckCollider.bounds.center;
-        Collider[] overlappedGroundColliders = Physics.OverlapBox(groundColliderCenterInWorldSpace, groundCheckCollider.bounds.extents, groundCheckCollider.transform.rotation, stateMachine.Player.layerData.groundLayer, QueryTriggerInteraction.Ignore);
+        Collider[] overlappedGroundColliders = Physics.OverlapBox(groundColliderCenterInWorldSpace, stateMachine.Player.colliderUtility.triggerColliderData.groundCheckColliderExtents, groundCheckCollider.transform.rotation, stateMachine.Player.layerData.groundLayer, QueryTriggerInteraction.Ignore);
         return overlappedGroundColliders.Length > 0;
     }
     #endregion
@@ -85,7 +93,6 @@ public class PlayerGroundedState : PlayerMovementStates
     protected override void AddInputActionCallBack()
     {
         base.AddInputActionCallBack();
-        stateMachine.Player.playerInput.playerActions.Movement.canceled += OnMovementCanceled;
         stateMachine.Player.playerInput.playerActions.Dash.started += OnDashStarted;
         stateMachine.Player.playerInput.playerActions.Jump.started += OnJumpStarted;
     }
@@ -93,7 +100,6 @@ public class PlayerGroundedState : PlayerMovementStates
     protected override void RemoveInputActionCallBack()
     {
         base.RemoveInputActionCallBack();
-        stateMachine.Player.playerInput.playerActions.Movement.canceled -= OnMovementCanceled;
         stateMachine.Player.playerInput.playerActions.Dash.started -= OnDashStarted;
         stateMachine.Player.playerInput.playerActions.Jump.started -= OnJumpStarted;
 
@@ -143,10 +149,6 @@ public class PlayerGroundedState : PlayerMovementStates
     {
         base.OnWalkToggleStarted(context);
         stateMachine.ChangeState(stateMachine.runningState);
-    }
-    protected virtual void OnMovementCanceled(InputAction.CallbackContext context)
-    {
-        stateMachine.ChangeState(stateMachine.idlingState);
     }
     protected virtual void OnDashStarted(InputAction.CallbackContext context)
     {

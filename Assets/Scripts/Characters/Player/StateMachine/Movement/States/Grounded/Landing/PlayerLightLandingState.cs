@@ -1,26 +1,23 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerIdlingState : PlayerGroundedState
+public class PlayerLightLandingState : PlayerLandingState
 {
-    private PlayerIdleData idleData;
-    public PlayerIdlingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
+    public PlayerLightLandingState(PlayerMovementStateMachine playerMovementStateMachine) : base(playerMovementStateMachine)
     {
-        idleData = movementData.idleData;
     }
     #region IState Methods
     public override void Enter()
     {
         stateMachine.reusableData.movementSpeedModifier = 0f;
-        stateMachine.reusableData.backwardsCameraRecenteringData = idleData.backwardsCameraRecenteringData;
         base.Enter();
+
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.stationeryForce;
         ResetVelocity();
     }
+
     public override void Update()
     {
         base.Update();
@@ -30,7 +27,6 @@ public class PlayerIdlingState : PlayerGroundedState
         }
         OnMove();
     }
-
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
@@ -40,6 +36,11 @@ public class PlayerIdlingState : PlayerGroundedState
             return;
         }
         ResetVelocity();
+    }
+
+    public override void OnAnimationTransitionEvent()
+    {
+        stateMachine.ChangeState(stateMachine.idlingState);
     }
     #endregion
 }

@@ -18,7 +18,7 @@ public class PlayerAirborneState : PlayerMovementStates
     protected override void OnContactWithGround(Collider collider)
     {
         base.OnContactWithGround(collider);
-        stateMachine.ChangeState(stateMachine.idlingState);
+        stateMachine.ChangeState(stateMachine.lightLandingState);
     }
     protected virtual void ResetSprintState()
     {

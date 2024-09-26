@@ -17,9 +17,10 @@ public class PlayerSprintingState : PlayerMovingState
     #region IState Methods
     public override void Enter()
     {
+        stateMachine.reusableData.movementSpeedModifier = sprintData.speedModifier;
         base.Enter();
 
-        stateMachine.reusableData.movementSpeedModifier = sprintData.speedModifier;
+
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.strongForce;
         shouldResetSprintState = true;
 
@@ -90,6 +91,7 @@ public class PlayerSprintingState : PlayerMovingState
     protected override void OnMovementCanceled(InputAction.CallbackContext context)
     {
         stateMachine.ChangeState(stateMachine.hardStoppingState);
+        base.OnMovementCanceled(context);
     }
     protected override void OnJumpStarted(InputAction.CallbackContext context)
     {

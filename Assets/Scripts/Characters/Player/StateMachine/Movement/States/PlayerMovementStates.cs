@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,8 +18,10 @@ public class PlayerMovementStates : IState
         stateMachine = playerMovementStateMachine;
         movementData = stateMachine.Player.Data.GroundedData;
         airborneData = stateMachine.Player.Data.AirborneData;
+        SetBaseCameraRecenteringData();
         InitializeData();
     }
+
 
     private void InitializeData()
     {
@@ -106,7 +109,7 @@ public class PlayerMovementStates : IState
         Vector3 movementDirection = GetMovementInputDirection();
         float targetRotationYAngle = Rotate(movementDirection);
         Vector3 targetRotationDirection = GetTargetRotationDirection(targetRotationYAngle);
-        float movementSpeed = GetMoveSpeed();
+        float movementSpeed = GetMovementSpeed();
         Vector3 currentPlayerHorizontalVelocity = GetPlayerHorizontalVelocity();
         stateMachine.Player.myRigidbody.AddForce(targetRotationDirection * movementSpeed - currentPlayerHorizontalVelocity, ForceMode.VelocityChange);
     }
@@ -155,9 +158,15 @@ public class PlayerMovementStates : IState
     {
         return new Vector3(stateMachine.reusableData.movementInput.x, 0f, stateMachine.reusableData.movementInput.y);
     }
-    protected float GetMoveSpeed()
+    protected float GetMovementSpeed(bool shouldConsiderSlopes = true)
     {
-        return movementData.baseSpeed * stateMachine.reusableData.movementSpeedModifier * stateMachine.reusableData.movementOnSlopeSpeedModifier;
+        float movementSpeed = movementData.baseSpeed * stateMachine.reusableData.movementSpeedModifier * stateMachine.reusableData.movementOnSlopeSpeedModifier;
+        if (shouldConsiderSlopes)
+        {
+            movementSpeed *= stateMachine.reusableData.movementOnSlopeSpeedModifier;
+        }
+        return movementSpeed;
+
     }
     protected Vector3 GetPlayerHorizontalVelocity()
     {
@@ -212,6 +221,9 @@ public class PlayerMovementStates : IState
     protected virtual void AddInputActionCallBack()
     {
         stateMachine.Player.playerInput.playerActions.WalkToggle.started += OnWalkToggleStarted;
+        stateMachine.Player.playerInput.playerActions.Look.started += OnMouseMovementStarted;
+        stateMachine.Player.playerInput.playerActions.Movement.performed += OnMovementPerformed;
+        stateMachine.Player.playerInput.playerActions.Movement.canceled += OnMovementCanceled;
     }
 
 
@@ -219,7 +231,14 @@ public class PlayerMovementStates : IState
     protected virtual void RemoveInputActionCallBack()
     {
         stateMachine.Player.playerInput.playerActions.WalkToggle.started -= OnWalkToggleStarted;
+        stateMachine.Player.playerInput.playerActions.Look.started -= OnMouseMovementStarted;
+        stateMachine.Player.playerInput.playerActions.Movement.performed -= OnMovementPerformed;
+        stateMachine.Player.playerInput.playerActions.Movement.canceled -= OnMovementCanceled;
+
     }
+
+
+
     protected void DecelerateHorizontally()
     {
         Vector3 playerHorizontalVelocity = GetPlayerHorizontalVelocity();
@@ -260,6 +279,69 @@ public class PlayerMovementStates : IState
     {
 
     }
+
+    protected void UpdateCameraRecenteringState(Vector2 movementInput)
+    {
+        if (movementInput == Vector2.zero)
+        {
+            return;
+        }
+        if (movementInput == Vector2.up)
+        {
+            DisableCameraRecentering();
+            return;
+        }
+
+        float cameraVerticalAngle = stateMachine.Player.mainCameraTransform.eulerAngles.x;
+        if (cameraVerticalAngle >= 270f)
+        {
+            cameraVerticalAngle -= 360f;
+        }
+        cameraVerticalAngle = Mathf.Abs(cameraVerticalAngle);
+
+        if (movementInput == Vector2.down)
+        {
+            SetCameraRecenteringState(cameraVerticalAngle, stateMachine.reusableData.backwardsCameraRecenteringData);
+            return;
+        }
+        SetCameraRecenteringState(cameraVerticalAngle, stateMachine.reusableData.sidewaysCameraRecenteringData);
+
+    }
+
+    protected void SetCameraRecenteringState(float cameraVerticalAngle, List<PlayerCameraRecenteringData> cameraRecenteringData)
+    {
+        foreach (PlayerCameraRecenteringData recenteringData in cameraRecenteringData)
+        {
+            if (!recenteringData.IsWithinRange(cameraVerticalAngle))
+            {
+                continue;
+            }
+            EnableCameraRecentering(recenteringData.waitTime, recenteringData.recenteringTime);
+            return;
+        }
+        DisableCameraRecentering();
+    }
+
+    protected void EnableCameraRecentering(float waitTime = -1f, float recenteringTime = -1f)
+    {
+        float movementSpeed = GetMovementSpeed();
+        if (movementSpeed == 0f)
+        {
+            movementSpeed = movementData.baseSpeed;
+        }
+        stateMachine.Player.cameraUtility.EnableRecentering(waitTime, recenteringTime, movementData.baseSpeed, movementSpeed);
+
+    }
+    protected void DisableCameraRecentering()
+    {
+        stateMachine.Player.cameraUtility.DisableRecentering();
+    }
+
+    protected void SetBaseCameraRecenteringData()
+    {
+        stateMachine.reusableData.backwardsCameraRecenteringData = movementData.backwardsCameraRecenteringData;
+        stateMachine.reusableData.sidewaysCameraRecenteringData = movementData.sidewaysCameraRecenteringData;
+    }
     #endregion
 
 
@@ -269,5 +351,18 @@ public class PlayerMovementStates : IState
         stateMachine.reusableData.shoudWalk = !stateMachine.reusableData.shoudWalk;
     }
 
+    protected virtual void OnMovementCanceled(InputAction.CallbackContext context)
+    {
+        DisableCameraRecentering();
+    }
+    private void OnMovementPerformed(InputAction.CallbackContext context)
+    {
+        UpdateCameraRecenteringState(context.ReadValue<Vector2>());
+    }
+
+    private void OnMouseMovementStarted(InputAction.CallbackContext context)
+    {
+        UpdateCameraRecenteringState(stateMachine.reusableData.movementInput);
+    }
     #endregion
 }

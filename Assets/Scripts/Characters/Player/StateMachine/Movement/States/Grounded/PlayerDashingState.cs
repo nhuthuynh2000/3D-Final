@@ -17,13 +17,13 @@ public class PlayerDashingState : PlayerGroundedState
     #region IState Methods
     public override void Enter()
     {
+        stateMachine.reusableData.movementSpeedModifier = dashData.speedModifier;
         base.Enter();
 
-        stateMachine.reusableData.movementSpeedModifier = dashData.speedModifier;
         stateMachine.reusableData.rotationData = dashData.RotationData;
         stateMachine.reusableData.currentJumpForce = airborneData.jumpData.strongForce;
 
-        AddForceOnTransitionFromStationeryState();
+        Dash();
         shouldKeepRotating = stateMachine.reusableData.movementInput != Vector2.zero;
         UpdateConsecutiveDashes();
 
@@ -56,18 +56,20 @@ public class PlayerDashingState : PlayerGroundedState
 
     #endregion
     #region Main Methods
-    private void AddForceOnTransitionFromStationeryState()
+    private void Dash()
     {
+        Vector3 dashDirection = stateMachine.Player.transform.forward;
+        dashDirection.y = 0f;
+
+        UpdateTargetRotation(dashDirection, false);
         if (stateMachine.reusableData.movementInput != Vector2.zero)
         {
-            return;
+            UpdateTargetRotation(GetMovementInputDirection());
+            dashDirection = GetTargetRotationDirection(stateMachine.reusableData.CurrentTargetRotation.y);
         }
-        Vector3 characterRotationDirection = stateMachine.Player.transform.forward;
-        characterRotationDirection.y = 0f;
 
-        UpdateTargetRotation(characterRotationDirection, false);
 
-        stateMachine.Player.myRigidbody.velocity = characterRotationDirection * GetMoveSpeed();
+        stateMachine.Player.myRigidbody.velocity = dashDirection * GetMovementSpeed(false);
 
     }
 
@@ -109,10 +111,6 @@ public class PlayerDashingState : PlayerGroundedState
     #endregion
 
     #region Input Methods
-    protected override void OnMovementCanceled(InputAction.CallbackContext context)
-    {
-
-    }
     protected override void OnDashStarted(InputAction.CallbackContext context)
     {
 

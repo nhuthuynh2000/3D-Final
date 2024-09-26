@@ -14,6 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <GroundedData>k__BackingField:
     <baseSpeed>k__BackingField: 5
+    <groundToFallRayDistance>k__BackingField: 1
+    <sidewaysCameraRecenteringData>k__BackingField:
+    - <minimumAngle>k__BackingField: 0
+      <maximumAngle>k__BackingField: 80
+      <waitTime>k__BackingField: -1
+      <recenteringTime>k__BackingField: -1
+    - <minimumAngle>k__BackingField: 80
+      <maximumAngle>k__BackingField: 90
+      <waitTime>k__BackingField: 0
+      <recenteringTime>k__BackingField: 0.3
+    <backwardsCameraRecenteringData>k__BackingField:
+    - <minimumAngle>k__BackingField: 80
+      <maximumAngle>k__BackingField: 90
+      <waitTime>k__BackingField: 0
+      <recenteringTime>k__BackingField: 0.5
     <slopeSpeedAngle>k__BackingField:
       serializedVersion: 2
       m_Curve:
@@ -69,6 +84,17 @@ MonoBehaviour:
       <targetRoationReachTime>k__BackingField: {x: 0, y: 0.14, z: 0}
     <walkData>k__BackingField:
       <speedModifier>k__BackingField: 0.225
+      <backwardsCameraRecenteringData>k__BackingField:
+      - <minimumAngle>k__BackingField: 80
+        <maximumAngle>k__BackingField: 90
+        <waitTime>k__BackingField: -1
+        <recenteringTime>k__BackingField: -1
+    <idleData>k__BackingField:
+      <backwardsCameraRecenteringData>k__BackingField:
+      - <minimumAngle>k__BackingField: 80
+        <maximumAngle>k__BackingField: 90
+        <waitTime>k__BackingField: 0.25
+        <recenteringTime>k__BackingField: 0.5
     <runData>k__BackingField:
       <speedModifier>k__BackingField: 1
     <dashData>k__BackingField:
@@ -86,6 +112,8 @@ MonoBehaviour:
       <lightDecelerationForce>k__BackingField: 5
       <mediumDecelerationForce>k__BackingField: 6.5
       <hardDecelerationForce>k__BackingField: 5
+    <rollData>k__BackingField:
+      <speedModifier>k__BackingField: 1
   <AirborneData>k__BackingField:
     <jumpData>k__BackingField:
       <rotationData>k__BackingField:
@@ -188,3 +216,5 @@ MonoBehaviour:
       <weakForce>k__BackingField: {x: 1, y: 5, z: 1}
       <mediumForce>k__BackingField: {x: 3.5, y: 5, z: 3.5}
       <strongForce>k__BackingField: {x: 5, y: 5, z: 5}
+      <DecelerationForce>k__BackingField: 1.5
+    <fallData>k__BackingField: {fileID: 0}

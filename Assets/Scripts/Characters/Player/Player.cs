@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     [field: Header("Collisions")]
     [field: SerializeField] public PlayerCapsuleColliderUtility colliderUtility { get; private set; }
     [field: SerializeField] public PlayerLayerData layerData { get; private set; }
+    [field: Header("Camera")]
+    [field: SerializeField] public PlayerCameraUtility cameraUtility { get; private set; }
     public Rigidbody myRigidbody { get; private set; }
     public Transform mainCameraTransform { get; private set; }
     public PlayerInput playerInput { get; private set; }
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
 
         colliderUtility.Initialize(gameObject);
         colliderUtility.CalculateCapsuleColliderDimensions();
+        cameraUtility.Initialize();
 
         mainCameraTransform = Camera.main.transform;
         movementStateMachine = new PlayerMovementStateMachine(this);
@@ -50,5 +53,18 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         movementStateMachine.PhysicsUpdate();
+    }
+    public void OnMovementStateAnimationEnterEvent()
+    {
+        movementStateMachine.OnAnimationEnterEvent();
+    }
+
+    public void OnMovementStateAnimationExitEvent()
+    {
+        movementStateMachine.OnAnimationExitEvent();
+    }
+    public void OnMovementStateAnimationTransitionEvent()
+    {
+        movementStateMachine.OnAnimationTransitionEvent();
     }
 }

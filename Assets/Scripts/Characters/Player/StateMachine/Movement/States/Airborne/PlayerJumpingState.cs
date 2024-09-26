@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerJumpingState : PlayerAirborneState
 {
@@ -64,6 +65,7 @@ public class PlayerJumpingState : PlayerAirborneState
 
         if (shouldKeepRotating)
         {
+            UpdateTargetRotation(GetMovementInputDirection());
             jumpDirection = GetTargetRotationDirection(stateMachine.reusableData.CurrentTargetRotation.y);
         }
 
@@ -97,6 +99,14 @@ public class PlayerJumpingState : PlayerAirborneState
 
     #region Resuable Methods
     protected override void ResetSprintState()
+    {
+
+    }
+    #endregion
+
+    #region Input Methods
+
+    protected override void OnMovementCanceled(InputAction.CallbackContext context)
     {
 
     }
