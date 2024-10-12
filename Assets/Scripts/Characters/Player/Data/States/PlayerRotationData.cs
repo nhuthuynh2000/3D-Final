@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public class PlayerRotationData
+namespace GenshinImpactMovementSystem
 {
-    [field: SerializeField] public Vector3 targetRoationReachTime { get; private set; }
-
+    [Serializable]
+    public class PlayerRotationData
+    {
+        [field: SerializeField] public Vector3 TargetRotationReachTime { get; private set; }
+    }
 }

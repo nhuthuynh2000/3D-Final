@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public class PlayerRunData
+namespace GenshinImpactMovementSystem
 {
-    [field: SerializeField][field: Range(1f, 2f)] public float speedModifier { get; private set; } = 1f;
-
+    [Serializable]
+    public class PlayerRunData
+    {
+        [field: SerializeField] [field: Range(1f, 2f)] public float SpeedModifier { get; private set; } = 1f;
+    }
 }

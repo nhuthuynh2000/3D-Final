@@ -1,50 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class StateMachine
+namespace GenshinImpactMovementSystem
 {
-    protected IState curState;
+    public abstract class StateMachine
+    {
+        protected IState currentState;
 
-    public void ChangeState(IState newState)
-    {
-        if (curState != null)
+        public void ChangeState(IState newState)
         {
-            curState.Exit();
+            currentState?.Exit();
+
+            currentState = newState;
+
+            currentState.Enter();
         }
-        curState = newState;
-        curState.Enter();
-    }
-    public void HandleInput()
-    {
-        curState?.HandleInput();
-    }
-    public void Update()
-    {
-        curState?.Update();
-    }
-    public void PhysicsUpdate()
-    {
-        curState?.PhysicsUpdate();
-    }
-    public void OnAnimationEnterEvent()
-    {
-        curState?.OnAnimationEnterEvent();
-    }
-    public void OnAnimationExitEvent()
-    {
-        curState?.OnAnimationExitEvent();
-    }
-    public void OnAnimationTransitionEvent()
-    {
-        curState?.OnAnimationTransitionEvent();
-    }
-    public void OnTriggerEnter(Collider collider)
-    {
-        curState.OnTriggerEnter(collider);
-    }
-    public void OnTriggerExit(Collider collider)
-    {
-        curState.OnTriggerExit(collider);
+
+        public void HandleInput()
+        {
+            currentState?.HandleInput();
+        }
+
+        public void Update()
+        {
+            currentState?.Update();
+        }
+
+        public void PhysicsUpdate()
+        {
+            currentState?.PhysicsUpdate();
+        }
+
+        public void OnTriggerEnter(Collider collider)
+        {
+            currentState?.OnTriggerEnter(collider);
+        }
+
+        public void OnTriggerExit(Collider collider)
+        {
+            currentState?.OnTriggerExit(collider);
+        }
+
+        public void OnAnimationEnterEvent()
+        {
+            currentState?.OnAnimationEnterEvent();
+        }
+
+        public void OnAnimationExitEvent()
+        {
+            currentState?.OnAnimationExitEvent();
+        }
+
+        public void OnAnimationTransitionEvent()
+        {
+            currentState?.OnAnimationTransitionEvent();
+        }
     }
 }

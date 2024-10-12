@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5900853a857d2a74fa1af44782311824
+guid: 01d4947ae43b83e43bd641ff3cf71d8f
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -11,4 +11,4 @@ ScriptedImporter:
   generateWrapperCode: 1
   wrapperCodePath: 
   wrapperClassName: 
-  wrapperCodeNamespace: 
+  wrapperCodeNamespace: GenshinImpactMovementSystem

@@ -1,19 +1,21 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class PlayerLayerData
+namespace GenshinImpactMovementSystem
 {
-    [field: SerializeField] public LayerMask groundLayer { get; private set; }
+    [Serializable]
+    public class PlayerLayerData
+    {
+        [field: SerializeField] public LayerMask GroundLayer { get; private set; }
 
-    public bool ContainsLayer(LayerMask layerMask, int layer)
-    {
-        return (1 << layer & layerMask) != 0;
-    }
-    public bool isGroundLayer(int layer)
-    {
-        return ContainsLayer(groundLayer, layer);
+        public bool ContainsLayer(LayerMask layerMask, int layer)
+        {
+            return (1 << layer & layerMask) != 0;
+        }
+
+        public bool IsGroundLayer(int layer)
+        {
+            return ContainsLayer(GroundLayer, layer);
+        }
     }
 }

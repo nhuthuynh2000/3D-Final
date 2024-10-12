@@ -1,42 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAnimationEventTrigger : MonoBehaviour
+namespace GenshinImpactMovementSystem
 {
-    private Player player;
+    public class PlayerAnimationEventTrigger : MonoBehaviour
+    {
+        private Player player;
 
-    private void Awake()
-    {
-        player = transform.parent.GetComponentInParent<Player>();
-    }
+        private void Awake()
+        {
+            player = transform.parent.GetComponent<Player>();
+        }
 
-    public void TriggerOnMovementStateAnimationEnterEvent()
-    {
-        if (isAnimationTransition())
+        public void TriggerOnMovementStateAnimationEnterEvent()
         {
-            return;
+            if (IsInAnimationTransition())
+            {
+                return;
+            }
+
+            player.OnMovementStateAnimationEnterEvent();
         }
-        player.OnMovementStateAnimationEnterEvent();
-    }
-    public void TriggerOnMovementStateAnimationExitEvent()
-    {
-        if (isAnimationTransition())
+
+        public void TriggerOnMovementStateAnimationExitEvent()
         {
-            return;
+            if (IsInAnimationTransition())
+            {
+                return;
+            }
+
+            player.OnMovementStateAnimationExitEvent();
         }
-        player.OnMovementStateAnimationExitEvent();
-    }
-    public void TriggerOnMovementStateAnimationTransitionEvent()
-    {
-        if (isAnimationTransition())
+
+        public void TriggerOnMovementStateAnimationTransitionEvent()
         {
-            return;
+            if (IsInAnimationTransition())
+            {
+                return;
+            }
+
+            player.OnMovementStateAnimationTransitionEvent();
         }
-        player.OnMovementStateAnimationTransitionEvent();
-    }
-    private bool isAnimationTransition(int layerIndex = 0)
-    {
-        return player.animator.IsInTransition(layerIndex);
+
+        private bool IsInAnimationTransition(int layerIndex = 0)
+        {
+            return player.Animator.IsInTransition(layerIndex);
+        }
     }
 }
